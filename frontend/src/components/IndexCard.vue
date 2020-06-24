@@ -163,7 +163,8 @@ export default {
       `;
     },
     navToDetails() {
-      if (this.$route.params.name !== this.name) { // prevent un-necessary backend call
+      if (this.$route.params.name !== this.name) {
+        // prevent un-necessary backend call
         router.push({ path: `/${this.name}` });
       }
     },

@@ -20,8 +20,8 @@
         placeholder="Search"
         class="search-box"
         v-model="searchText"
-        v-on:keyup.enter="handleSearch" 
-      /> 
+        v-on:keyup.enter="handleSearch"
+      />
       <v-select
         :options="pokemonTypes"
         placeholder="Type"
