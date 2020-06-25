@@ -49,10 +49,6 @@
   </div>
 </template>
 
-<style lang="scss">
-@import "../styles/toolbar.scss";
-</style>
-
 <script>
 export default {
   name: "ToolBar",
@@ -83,3 +79,7 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+@import "../styles/toolbar.scss";
+</style>

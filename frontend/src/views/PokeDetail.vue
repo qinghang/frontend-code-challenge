@@ -35,32 +35,6 @@
   </div>
 </template>
 
-<style lang="scss">
-.main-pokemon {
-  .poke-image .image-size {
-    width: 16rem;
-    height: 17rem;
-  }
-  .poke-header {
-    padding-top: 1rem;
-  }
-}
-.evolutions {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 10px;
-  grid-gap: 10px;
-  .poke-header .like-button {
-    padding-top: 0.1rem;
-  }
-}
-@media (max-width: 700px) {
-  .evolutions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-</style>
-
 <script>
 import IndexCard from "../components/IndexCard";
 
@@ -127,3 +101,29 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.main-pokemon {
+  .poke-image .image-size {
+    width: 16rem;
+    height: 17rem;
+  }
+  .poke-header {
+    padding-top: 1rem;
+  }
+}
+.evolutions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 10px;
+  grid-gap: 10px;
+  .poke-header .like-button {
+    padding-top: 0.1rem;
+  }
+}
+@media (max-width: 700px) {
+  .evolutions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>

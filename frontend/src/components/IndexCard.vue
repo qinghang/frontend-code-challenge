@@ -5,8 +5,17 @@
       <span class="poke-sound" v-on:click="playSound()" v-if="sound"></span>
     </div>
     <div class="poke-header">
-      <div class="poke-name" v-on:click="navToDetails()">
-        <h4>{{ name }}</h4>
+      <div class="poke-name">
+        <h4>
+          <span v-on:click="navToDetails()">{{ name }}</span>
+          <span class="preview-btn" v-if="showPreview" v-on:click="openModal()">
+            <img
+              src="../assets/icons/pokeball-icon.png"
+              alt="pokeball"
+              width="18"
+            />
+          </span>
+        </h4>
         <p v-if="types">{{ types.join(", ") }}</p>
       </div>
       <div class="like-button">
@@ -50,10 +59,6 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-@import "../styles/indexCard.scss";
-</style>
-
 <script>
 import router from "../router";
 
@@ -65,6 +70,10 @@ export default {
       default: false
     },
     isfilterFavorite: {
+      type: Boolean,
+      default: false
+    },
+    showPreview: {
       type: Boolean,
       default: false
     },
@@ -190,7 +199,14 @@ export default {
         message: "Something went wrong!",
         type: "error"
       });
+    },
+    openModal() {
+      this.$emit("openModal", this.name);
     }
   }
 };
 </script>
+
+<style scoped lang="scss">
+@import "../styles/indexCard.scss";
+</style>

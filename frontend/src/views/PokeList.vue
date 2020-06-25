@@ -21,19 +21,23 @@
       :isListLayout="isListLayout"
       :isfilterFavorite="options.filter.isFavorite"
       @getPokemons="getPokemons"
+      @openModal="openModal"
     />
+    <Modal v-show="showModal" :pokemon="previewPokemon" @close="closeModal" />
   </div>
 </template>
 
 <script>
 import ToolBar from "../components/ToolBar";
 import ListView from "../components/ListView";
+import Modal from "../components/Modal.vue";
 
 export default {
   name: "PokeList",
   components: {
     ToolBar,
-    ListView
+    ListView,
+    Modal
   },
   data() {
     return {
@@ -48,7 +52,9 @@ export default {
           type: ""
         }
       },
-      isListLayout: false
+      isListLayout: false,
+      showModal: false,
+      previewPokemon: {}
     };
   },
   created() {
@@ -138,6 +144,33 @@ export default {
         .then(res => {
           this.pokemonTypes = res.data.pokemonTypes;
         });
+    },
+    getPokemonByName(name) {
+      const query = `graphql?query={ pokemonByName(name: "${name}") { 
+            id, 
+            name, 
+            types, 
+            image, 
+            isFavorite, 
+            sound, 
+            evolutions {id, name}, 
+            weight {minimum, maximum}, 
+            height {minimum, maximum}, 
+            maxCP, 
+            maxHP 
+      } } `;
+      fetch(query)
+        .then(res => res.json())
+        .then(res => {
+          this.previewPokemon = res.data.pokemonByName;
+        });
+    },
+    openModal(name) {
+      this.getPokemonByName(name);
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
     }
   }
 };

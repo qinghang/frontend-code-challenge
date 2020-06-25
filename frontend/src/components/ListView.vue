@@ -12,11 +12,37 @@
         :isFavorite="pokemon.isFavorite"
         :isListLayout="isListLayout"
         :isfilterFavorite="isfilterFavorite"
+        :showPreview="true"
         @getPokemons="getPokemons"
+        @openModal="openModal"
       />
     </div>
   </div>
 </template>
+
+<script>
+import IndexCard from "../components/IndexCard";
+
+export default {
+  name: "ListView",
+  components: {
+    IndexCard
+  },
+  props: {
+    pokemons: Array,
+    isListLayout: Boolean,
+    isfilterFavorite: Boolean
+  },
+  methods: {
+    getPokemons() {
+      this.$emit("getPokemons");
+    },
+    openModal(name) {
+      this.$emit("openModal", name);
+    }
+  }
+};
+</script>
 
 <style scoped lang="scss">
 .list-view {
@@ -37,24 +63,3 @@
   }
 }
 </style>
-
-<script>
-import IndexCard from "../components/IndexCard";
-
-export default {
-  name: "ListView",
-  components: {
-    IndexCard
-  },
-  props: {
-    pokemons: Array,
-    isListLayout: Boolean,
-    isfilterFavorite: Boolean
-  },
-  methods: {
-    getPokemons() {
-      this.$emit("getPokemons");
-    }
-  }
-};
-</script>
