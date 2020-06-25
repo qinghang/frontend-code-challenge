@@ -128,6 +128,7 @@ export default {
         });
     },
     scrollDown() {
+      // Add onscroll listener to check if scrolling get to bottom of the page
       window.onscroll = () => {
         let bottomOfWindow =
           document.documentElement.scrollTop + window.innerHeight ===

@@ -172,8 +172,9 @@ export default {
       `;
     },
     navToDetails() {
+      // if already in desire pokemon detail page, stop routing
+      // prevent un-necessary backend call
       if (this.$route.params.name !== this.name) {
-        // prevent un-necessary backend call
         router.push({ path: `/${this.name}` });
       }
     },
@@ -181,12 +182,14 @@ export default {
       const audio = new Audio(this.sound);
       this.playing = true;
       audio.play();
+      // reset playing to false after 0.5s
       setTimeout(() => {
         this.playing = false;
       }, 500);
     },
     showLikeAnimation() {
       this.loading = true;
+      // reset loading to false after 0.5s
       setTimeout(() => {
         this.loading = false;
       }, 500);
