@@ -24,6 +24,15 @@
   margin: 0 auto;
 }
 
+.pokeball {
+  background-image: url("./assets/icons/pokeball-icon.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;

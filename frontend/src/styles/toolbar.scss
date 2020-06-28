@@ -25,7 +25,7 @@
     }
 }
 
-.section-group {
+.group-wrapper {
     display: flex;
     flex-wrap: wrap;
     padding-top: 0.625rem;
@@ -38,7 +38,7 @@
     width: 60%;
 }
 
-.poke-select {
+.select-types {
     width: 20%;
     margin-left: 1rem;
 }
@@ -48,7 +48,7 @@
         width: 94%;
         margin-bottom: 0.625rem;
     }
-    .poke-select {
+    .select-types {
         width: 50%;
         margin-left: 0;
     }
@@ -72,28 +72,28 @@
 }
 
 /* Customize v-select style */
-.poke-select .vs__search::placeholder,
-.poke-select .vs__dropdown-toggle,
-.poke-select .vs__dropdown-menu {
+.select-types .vs__search::placeholder,
+.select-types .vs__dropdown-toggle,
+.select-types .vs__dropdown-menu {
   background: $light-grey;
   border: none;
   border-radius: 0;
   color: $vue-grey;
 }
-.poke-select .vs__dropdown-toggle {
+.select-types .vs__dropdown-toggle {
   height: 41px;
 }
 
-.poke-select .vs__dropdown-menu {
+.select-types .vs__dropdown-menu {
   margin-top: 3px;
 }
 
-.poke-select .vs__search::placeholder {
+.select-types .vs__search::placeholder {
   color: $vue-grey;
   font-size: 0.75rem;
 }
 
-.poke-select .vs__clear,
-.poke-select .vs__open-indicator {
+.select-types .vs__clear,
+.select-types .vs__open-indicator {
   fill: $vue-grey;
 }

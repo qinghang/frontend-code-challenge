@@ -4,15 +4,12 @@
     v-if="pokemons.length > 0"
   >
     <div v-for="pokemon in pokemons" :key="pokemon.id">
-      <IndexCard
-        :id="pokemon.id"
-        :name="pokemon.name"
-        :types="pokemon.types"
-        :image="pokemon.image"
-        :isFavorite="pokemon.isFavorite"
+      <PokemonCard
+        :pokemon="pokemon"
         :isListLayout="isListLayout"
         :isfilterFavorite="isfilterFavorite"
         :showPreview="true"
+        @updateListIsFavorite="updateListIsFavorite"
         @getPokemons="getPokemons"
         @openModal="openModal"
       />
@@ -21,19 +18,31 @@
 </template>
 
 <script>
-import IndexCard from "../components/IndexCard";
+import PokemonCard from "../components/PokemonCard";
 
 export default {
-  name: "ListView",
+  name: "PokemonList",
   components: {
-    IndexCard
+    PokemonCard
   },
   props: {
-    pokemons: Array,
-    isListLayout: Boolean,
-    isfilterFavorite: Boolean
+    pokemons: {
+      type: Array,
+      default: () => []
+    },
+    isListLayout: {
+      type: Boolean,
+      default: false
+    },
+    isfilterFavorite: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
+    updateListIsFavorite(id, bool) {
+      this.$emit("updateListIsFavorite", id, bool);
+    },
     getPokemons() {
       this.$emit("getPokemons");
     },

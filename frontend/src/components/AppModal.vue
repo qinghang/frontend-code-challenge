@@ -3,22 +3,18 @@
     <div class="modal-backdrop">
       <div class="modal" role="dialog" aria-describedby="modalDescription">
         <div class="modal-body" id="modalDescription">
-          <IndexCard
-            :id="pokemon.id"
-            :name="pokemon.name"
-            :types="pokemon.types"
-            :image="pokemon.image"
-            :isFavorite="pokemon.isFavorite"
-            :weight="pokemon.weight"
-            :height="pokemon.height"
-            :maxCP="pokemon.maxCP"
-            :maxHP="pokemon.maxHP"
+          <PokemonCard
+            :pokemon="pokemon"
+            :isfilterFavorite="isfilterFavorite"
+            @updatePreviewPokemonIsFavorite="updatePreviewPokemonIsFavorite"
+            @updateListIsFavorite="updateListIsFavorite"
+            @getPokemons="getPokemons"
           />
         </div>
         <button
           type="button"
           class="btn-green"
-          v-on:click="close()"
+          @click="close()"
           aria-label="Close modal"
         >
           Close
@@ -29,19 +25,35 @@
 </template>
 
 <script>
-import IndexCard from "./IndexCard";
+import PokemonCard from "./PokemonCard";
 
 export default {
   name: "Modal",
   components: {
-    IndexCard
+    PokemonCard
   },
   props: {
-    pokemon: Object
+    pokemon: {
+      type: Object,
+      require: true
+    },
+    isfilterFavorite: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     close() {
       this.$emit("close");
+    },
+    updatePreviewPokemonIsFavorite(bool) {
+      this.$emit("updatePreviewPokemonIsFavorite", bool);
+    },
+    updateListIsFavorite(id, bool) {
+      this.$emit("updateListIsFavorite", id, bool);
+    },
+    getPokemons() {
+      this.$emit("getPokemons");
     }
   }
 };
@@ -72,7 +84,7 @@ export default {
 }
 
 .modal-body {
-  padding: 0.5rem;
+  padding: 0.8rem 1rem;
 }
 
 .btn-green {

@@ -3,46 +3,46 @@
     <div class="btn-group">
       <button
         :class="{ activeBtn: !isfilterFavorite }"
-        v-on:click="handleButtonClick(false)"
+        @click="handleButtonClick(false)"
       >
         All
       </button>
       <button
         :class="{ activeBtn: isfilterFavorite }"
-        v-on:click="handleButtonClick(true)"
+        @click="handleButtonClick(true)"
       >
         Favorites
       </button>
     </div>
-    <div class="section-group">
+    <div class="group-wrapper">
       <input
         type="text"
         placeholder="Search"
         class="search-box"
         v-model="searchText"
-        v-on:keyup.enter="handleSearch"
+        @keyup.enter="handleSearch"
       />
       <v-select
         :options="pokemonTypes"
         placeholder="Type"
-        class="poke-select"
+        class="select-types"
         v-model="selectedType"
         @input="handleSelect"
-      ></v-select>
+      />
       <div class="layout-icons">
         <img
           src="../assets/icons/list-icon.png"
           alt="list"
           width="35"
           :class="{ activeIcon: isListLayout }"
-          v-on:click="handleIconClick(true)"
+          @click="handleIconClick(true)"
         />
         <img
           src="../assets/icons/grid-icon.png"
           alt="grid"
           width="35"
           :class="{ activeIcon: !isListLayout }"
-          v-on:click="handleIconClick(false)"
+          @click="handleIconClick(false)"
         />
       </div>
     </div>
@@ -53,9 +53,18 @@
 export default {
   name: "ToolBar",
   props: {
-    isfilterFavorite: Boolean,
-    isListLayout: Boolean,
-    pokemonTypes: Array
+    isListLayout: {
+      type: Boolean,
+      default: false
+    },
+    isfilterFavorite: {
+      type: Boolean,
+      default: false
+    },
+    pokemonTypes: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {

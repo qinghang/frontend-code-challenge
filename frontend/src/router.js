@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import PokeList from "./views/PokeList.vue";
+import PokeDex from "./views/PokeDex.vue";
 
 Vue.use(Router);
 
@@ -10,17 +10,17 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "pokelist",
-      component: PokeList
+      name: "pokeDex",
+      component: PokeDex
     },
     {
       path: "/:name",
-      name: "pokedetail",
+      name: "pokemonDetail",
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/PokeDetail.vue")
+        import(/* webpackChunkName: "about" */ "./views/PokemonDetail.vue")
     }
   ]
 });

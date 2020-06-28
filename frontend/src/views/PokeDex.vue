@@ -1,13 +1,10 @@
 <template>
   <div class="pokemon-list">
     <h1>
-      <img
-        src="../assets/icons/pokeball-icon.png"
-        alt="pokeball"
-        width="25"
-      />Pokédex
+      <span class="pokeball"></span>
+      Pokédex
     </h1>
-    <ToolBar
+    <AppToolbar
       :isfilterFavorite="options.filter.isFavorite"
       :isListLayout="isListLayout"
       :pokemonTypes="pokemonTypes"
@@ -16,28 +13,37 @@
       @filterByType="filterByType"
       @setListLayout="setListLayout"
     />
-    <ListView
+    <PokemonList
       :pokemons="pokemons"
       :isListLayout="isListLayout"
       :isfilterFavorite="options.filter.isFavorite"
+      @updateListIsFavorite="updateListIsFavorite"
       @getPokemons="getPokemons"
       @openModal="openModal"
     />
-    <Modal v-show="showModal" :pokemon="previewPokemon" @close="closeModal" />
+    <AppModal
+      v-show="showModal"
+      :pokemon="previewPokemon"
+      :isfilterFavorite="options.filter.isFavorite"
+      @close="closeModal"
+      @updatePreviewPokemonIsFavorite="updatePreviewPokemonIsFavorite"
+      @updateListIsFavorite="updateListIsFavorite"
+      @getPokemons="getPokemons"
+    />
   </div>
 </template>
 
 <script>
-import ToolBar from "../components/ToolBar";
-import ListView from "../components/ListView";
-import Modal from "../components/Modal.vue";
+import AppToolbar from "../components/AppToolbar";
+import PokemonList from "../components/PokemonList";
+import AppModal from "../components/AppModal.vue";
 
 export default {
-  name: "PokeList",
+  name: "PokeDex",
   components: {
-    ToolBar,
-    ListView,
-    Modal
+    AppToolbar,
+    PokemonList,
+    AppModal
   },
   data() {
     return {
@@ -60,7 +66,12 @@ export default {
   created() {
     this.getPokemons();
     this.getPokemonTypes();
-    this.scrollDown();
+  },
+  mounted() {
+    this.scrolling();
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.hitWindowBottom);
   },
   methods: {
     filterByFavorite(bool) {
@@ -72,6 +83,7 @@ export default {
       this.getPokemons();
     },
     filterByType(type) {
+      // set type to empty string when type is null
       const selectedType = type === null ? "" : type;
       this.options.filter.type = selectedType;
       this.getPokemons();
@@ -81,7 +93,7 @@ export default {
     },
     getPokemons() {
       const { limit, search, filter } = this.options;
-      this.options.offset = 0; // Reset offset, offset may modify by infinite scroll
+      this.options.offset = 0; // Reset offset to 0, offset may modify by infinite scroll
 
       const query = `graphql?query={ 
         pokemons(
@@ -104,6 +116,7 @@ export default {
         });
     },
     addPokemons() {
+      // for infinite scroll, add more pokemons when scroll to page bottom
       const { limit, offset, search, filter } = this.options;
       const new_offset = offset + limit;
       const query = `graphql?query={ 
@@ -127,17 +140,19 @@ export default {
           this.options.offset = new_offset;
         });
     },
-    scrollDown() {
-      // Add onscroll listener to check if scrolling get to bottom of the page
-      window.onscroll = () => {
-        let bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight;
+    scrolling() {
+      // Add scroll listener to check if scrolling get to bottom of the page
+      window.addEventListener("scroll", this.hitWindowBottom);
+    },
+    hitWindowBottom() {
+      // add pokemons when scroll to the bottom
+      let bottomOfWindow =
+        document.documentElement.scrollTop + window.innerHeight ===
+        document.documentElement.offsetHeight;
 
-        if (bottomOfWindow) {
-          this.addPokemons();
-        }
-      };
+      if (bottomOfWindow) {
+        this.addPokemons();
+      }
     },
     getPokemonTypes() {
       fetch("graphql?query={pokemonTypes}")
@@ -147,6 +162,7 @@ export default {
         });
     },
     getPokemonByName(name) {
+      // for preview modal
       const query = `graphql?query={ pokemonByName(name: "${name}") { 
             id, 
             name, 
@@ -154,7 +170,6 @@ export default {
             image, 
             isFavorite, 
             sound, 
-            evolutions {id, name}, 
             weight {minimum, maximum}, 
             height {minimum, maximum}, 
             maxCP, 
@@ -166,12 +181,40 @@ export default {
           this.previewPokemon = res.data.pokemonByName;
         });
     },
+    updateListIsFavorite(id, bool) {
+      // update pokemon isFavorite in pokemon list in front-end
+      // this function trigger only when isFavorite is updated on backend
+      const pokemonIndex = this.pokemons.findIndex(
+        pokemon => pokemon.id === id
+      );
+      if (pokemonIndex !== -1) {
+        const pokemon = this.pokemons[pokemonIndex];
+        // update isFavorite
+        pokemon.isFavorite = bool;
+        // replace pokemon with new value
+        this.pokemons.splice(pokemonIndex, 1, pokemon);
+      } else {
+        this.showErrorNotice();
+      }
+    },
+    updatePreviewPokemonIsFavorite(bool) {
+      // update isFavorite in preview modal
+      this.previewPokemon = Object.assign({}, this.previewPokemon, {
+        isFavorite: bool
+      });
+    },
     openModal(name) {
       this.getPokemonByName(name);
       this.showModal = true;
     },
     closeModal() {
       this.showModal = false;
+    },
+    showErrorNotice() {
+      this.$toast.open({
+        message: "Something went wrong!",
+        type: "error"
+      });
     }
   }
 };
