@@ -19,8 +19,7 @@
         type="text"
         placeholder="Search"
         class="search-box"
-        v-model="searchText"
-        @keyup.enter="handleSearch"
+        @input="handleSearch"
       />
       <v-select
         :options="pokemonTypes"
@@ -68,16 +67,25 @@ export default {
   },
   data() {
     return {
-      searchText: "",
+      debounce: null,
       selectedType: ""
     };
+  },
+  beforeDestroy() {
+    clearTimeout(this.debounce);
   },
   methods: {
     handleButtonClick(bool) {
       this.$emit("filterByFavorite", bool);
     },
-    handleSearch() {
-      this.$emit("filterBySearch", this.searchText); // Search perfom by press 'Enter' key, better way can be auto search when user stops typing
+    handleSearch(event) {
+      // perform dounce search
+      // search when user stop typing
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(() => {
+        // use event.target.value as the search value
+        this.$emit("filterBySearch", event.target.value);
+      }, 600);
     },
     handleSelect() {
       this.$emit("filterByType", this.selectedType);
