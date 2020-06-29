@@ -36,6 +36,8 @@
     border: none;
     padding: 0.625rem;
     width: 60%;
+    color: $dark-blue;
+    font-weight: bold;
 }
 
 .select-types {
@@ -96,4 +98,8 @@
 .select-types .vs__clear,
 .select-types .vs__open-indicator {
   fill: $vue-grey;
+}
+
+.select-types .vs__search {
+    font-weight: bold;
 }
