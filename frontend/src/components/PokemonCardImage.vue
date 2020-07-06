@@ -43,8 +43,9 @@ export default {
 };
 </script>
 
-<style lang="scss">
-// style for image and image size, change base on list or grid layout
+<style scoped lang="scss">
+@import "../styles/_variables.scss";
+
 .pokemon-image {
   position: relative;
   img {
@@ -57,10 +58,6 @@ export default {
   height: 8.75rem;
   margin: 2rem 0;
 }
-</style>
-
-<style scoped lang="scss">
-@import "../styles/_variables.scss";
 
 .pokemon-sound {
   height: 50px;

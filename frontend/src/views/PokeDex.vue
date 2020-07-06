@@ -16,19 +16,7 @@
     <PokemonList
       :pokemons="pokemons"
       :isListLayout="isListLayout"
-      :isfilterFavorite="options.filter.isFavorite"
-      @updateListIsFavorite="updateListIsFavorite"
-      @getPokemons="getPokemons"
-      @openModal="openModal"
-    />
-    <AppModal
-      v-show="showModal"
-      :pokemon="previewPokemon"
-      :isfilterFavorite="options.filter.isFavorite"
-      @close="closeModal"
-      @updatePreviewPokemonIsFavorite="updatePreviewPokemonIsFavorite"
-      @updateListIsFavorite="updateListIsFavorite"
-      @getPokemons="getPokemons"
+      @updateIsFavorite="updateIsFavorite"
     />
   </div>
 </template>
@@ -36,14 +24,12 @@
 <script>
 import AppToolbar from "../components/AppToolbar";
 import PokemonList from "../components/PokemonList";
-import AppModal from "../components/AppModal.vue";
 
 export default {
   name: "PokeDex",
   components: {
     AppToolbar,
-    PokemonList,
-    AppModal
+    PokemonList
   },
   data() {
     return {
@@ -58,9 +44,7 @@ export default {
           type: ""
         }
       },
-      isListLayout: false,
-      showModal: false,
-      previewPokemon: {}
+      isListLayout: false
     };
   },
   created() {
@@ -83,9 +67,7 @@ export default {
       this.getPokemons();
     },
     filterByType(type) {
-      // set type to empty string when type is null
-      const selectedType = type === null ? "" : type;
-      this.options.filter.type = selectedType;
+      this.options.filter.type = type;
       this.getPokemons();
     },
     setListLayout(bool) {
@@ -161,56 +143,27 @@ export default {
           this.pokemonTypes = res.data.pokemonTypes;
         });
     },
-    getPokemonByName(name) {
-      // for preview modal
-      const query = `graphql?query={ pokemonByName(name: "${name}") { 
-            id, 
-            name, 
-            types, 
-            image, 
-            isFavorite, 
-            sound, 
-            weight {minimum, maximum}, 
-            height {minimum, maximum}, 
-            maxCP, 
-            maxHP 
-      } } `;
-      fetch(query)
-        .then(res => res.json())
-        .then(res => {
-          this.previewPokemon = res.data.pokemonByName;
-        });
-    },
-    updateListIsFavorite(id, bool) {
+    updateIsFavorite(id, bool) {
       // update pokemon isFavorite in pokemon list in front-end
       // this function trigger only when isFavorite is updated on backend
       const pokemonIndex = this.pokemons.findIndex(
         pokemon => pokemon.id === id
       );
       if (pokemonIndex !== -1) {
-        const pokemon = this.pokemons[pokemonIndex];
-        // update isFavorite
-        pokemon.isFavorite = bool;
-        // replace pokemon with new value
-        this.pokemons.splice(pokemonIndex, 1, pokemon);
+        // remove pokemon in pokemon list when filter favorite is true and pokemon isFavorite is false
+        if (this.options.filter.isFavorite && bool === false) {
+          this.pokemons.splice(pokemonIndex, 1);
+        } else {
+          // update pokemon isFavorite and replace pokemon in pokemon list
+          const pokemon = this.pokemons[pokemonIndex];
+          pokemon.isFavorite = bool;
+          this.pokemons.splice(pokemonIndex, 1, pokemon);
+        }
       } else {
-        this.showErrorNotice();
+        this._showErrorNotice();
       }
     },
-    updatePreviewPokemonIsFavorite(bool) {
-      // update isFavorite in preview modal
-      this.previewPokemon = Object.assign({}, this.previewPokemon, {
-        isFavorite: bool
-      });
-    },
-    openModal(name) {
-      this.getPokemonByName(name);
-      this.showModal = true;
-    },
-    closeModal() {
-      this.showModal = false;
-    },
-    showErrorNotice() {
+    _showErrorNotice() {
       this.$toast.open({
         message: "Something went wrong!",
         type: "error"

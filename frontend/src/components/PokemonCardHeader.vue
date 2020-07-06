@@ -44,10 +44,6 @@ export default {
       type: Boolean,
       default: false
     },
-    isfilterFavorite: {
-      type: Boolean,
-      default: false
-    },
     showPreview: {
       type: Boolean,
       default: false
@@ -83,21 +79,6 @@ export default {
           }
         }
       `;
-    },
-    hasGetPokemons() {
-      return this.$listeners && this.$listeners.getPokemons;
-    },
-    hasUpdateListIsFavorite() {
-      return this.$listeners && this.$listeners.updateListIsFavorite;
-    },
-    hasUpdateCurrentPokemonIsFavorite() {
-      return this.$listeners && this.$listeners.updateCurrentPokemonIsFavorite;
-    },
-    hasUpdateEvolutionIsFavorite() {
-      return this.$listeners && this.$listeners.updateEvolutionIsFavorite;
-    },
-    hasUpdatePreviewPokemonIsFavorite() {
-      return this.$listeners && this.$listeners.updatePreviewPokemonIsFavorite;
     }
   },
   methods: {
@@ -116,47 +97,15 @@ export default {
       })
         .then(res => res.json())
         .then(() => {
-          this.showSuccessNotice();
+          this._showSuccessNotice();
           this.updateFrontendFavorite();
         })
         .catch(function() {
-          this.showErrorNotice();
+          this._showErrorNotice();
         });
     },
     updateFrontendFavorite() {
-      // filter out unFavorite pokemon when filter favorite is true
-      if (this.isfilterFavorite && this.isFavorite && this.hasGetPokemons) {
-        this.$emit("getPokemons");
-      }
-      // update isFavorite in pokemon list when filter favorite is false
-      if (!this.isfilterFavorite && this.hasUpdateListIsFavorite) {
-        this.$emit("updateListIsFavorite", this.pokemonId, !this.isFavorite);
-      }
-      // update isFavorite in pokemon detail page
-      if (this.hasUpdateCurrentPokemonIsFavorite) {
-        this.$emit("updateCurrentPokemonIsFavorite", !this.isFavorite);
-      }
-      // update isFavorite in evolution pokemon
-      if (this.hasUpdateEvolutionIsFavorite) {
-        this.$emit(
-          "updateEvolutionIsFavorite",
-          this.pokemonId,
-          !this.isFavorite
-        );
-      }
-      // update isFavorite in preview modal pokemon
-      if (
-        this.hasUpdatePreviewPokemonIsFavorite &&
-        this.hasUpdateListIsFavorite
-      ) {
-        this.$emit("updatePreviewPokemonIsFavorite", !this.isFavorite);
-        // also update isFavaorite in pokemon list
-        this.$emit("updateListIsFavorite", this.pokemonId, !this.isFavorite);
-        // filter out unFavorite pokemon when filter favorite is true
-        if (this.isfilterFavorite) {
-          this.$emit("getPokemons");
-        }
-      }
+      this.$emit("updateIsFavorite", this.pokemonId, !this.isFavorite);
     },
     showLikeAnimation() {
       this.loading = true;
@@ -165,34 +114,32 @@ export default {
         this.loading = false;
       }, 500);
     },
-    showSuccessNotice() {
+    openModal() {
+      this.$emit("openModal", this.pokemonName);
+    },
+    _showSuccessNotice() {
       this.$toast.open("You did it!");
     },
-    showErrorNotice() {
+    _showErrorNotice() {
       this.$toast.open({
         message: "Something went wrong!",
         type: "error"
       });
-    },
-    openModal() {
-      this.$emit("openModal", this.pokemonName);
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "../styles/_variables.scss";
-// style for header, change base on list or grid layout
+
 .pokemon-header {
   background-color: $light-grey;
   display: flex;
   text-align: left;
   padding-left: 0.625rem;
 }
-</style>
 
-<style scoped lang="scss">
 .pokemon-name {
   width: 84%;
   h4,

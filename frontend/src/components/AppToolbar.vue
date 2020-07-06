@@ -88,7 +88,10 @@ export default {
       }, 600);
     },
     handleSelect() {
-      this.$emit("filterByType", this.selectedType);
+      // set type to empty string when selectedType is null
+      // v-select will set selectedType to null when clear out selection
+      const type = this.selectedType ? this.selectedType : "";
+      this.$emit("filterByType", type);
     },
     handleIconClick(bool) {
       this.$emit("setListLayout", bool);

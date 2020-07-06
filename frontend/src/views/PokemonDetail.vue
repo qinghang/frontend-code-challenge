@@ -7,10 +7,7 @@
       {{ $route.params.name }}
     </h1>
     <div class="current-pokemon">
-      <PokemonCard
-        :pokemon="pokemon"
-        @updateCurrentPokemonIsFavorite="updateCurrentPokemonIsFavorite"
-      />
+      <PokemonCard :pokemon="pokemon" @updateIsFavorite="updateIsFavorite" />
     </div>
     <span v-if="hasEvolutions">
       <h2>Evolutions</h2>
@@ -18,7 +15,7 @@
         <div v-for="pokemon in pokemon.evolutions" :key="pokemon.id">
           <PokemonCard
             :pokemon="pokemon"
-            @updateEvolutionIsFavorite="updateEvolutionIsFavorite"
+            @updateIsFavorite="updateIsFavorite"
           />
         </div>
       </div>
@@ -77,6 +74,13 @@ export default {
           this.pokemon = res.data.pokemonByName;
         });
     },
+    updateIsFavorite(id, bool) {
+      if (id === this.pokemon.id) {
+        this.updateCurrentPokemonIsFavorite(bool);
+      } else {
+        this.updateEvolutionIsFavorite(id, bool);
+      }
+    },
     updateCurrentPokemonIsFavorite(bool) {
       this.pokemon = Object.assign({}, this.pokemon, { isFavorite: bool });
     },
@@ -104,14 +108,16 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .current-pokemon {
-  .pokemon-image .image-size {
-    width: 16rem;
-    height: 17rem;
-  }
-  .pokemon-header {
-    padding-top: 1rem;
+  /deep/ .pokemon-card {
+    .pokemon-image .image-size {
+      width: 16rem;
+      height: 17rem;
+    }
+    .pokemon-header {
+      padding-top: 1rem;
+    }
   }
 }
 
@@ -120,7 +126,7 @@ export default {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 10px;
   grid-gap: 10px;
-  .pokemon-header .like-button {
+  /deep/ .pokemon-header .like-button {
     padding-top: 0.1rem;
   }
 }

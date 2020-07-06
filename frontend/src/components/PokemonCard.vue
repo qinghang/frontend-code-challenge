@@ -1,5 +1,5 @@
 <template>
-  <div class="pokedex-list-item" :class="{ listLayout: isListLayout }">
+  <div class="pokemon-card">
     <PokemonCardImage
       :pokemonImage="pokemon.image"
       :pokemonSound="pokemon.sound"
@@ -10,15 +10,10 @@
       :pokemonName="pokemon.name"
       :pokemonTypes="pokemon.types"
       :isFavorite="pokemon.isFavorite"
-      :isfilterFavorite="isfilterFavorite"
       :showPreview="showPreview"
       @navToDetails="navToDetails"
-      @updateListIsFavorite="updateListIsFavorite"
-      @getPokemons="getPokemons"
+      @updateIsFavorite="updateIsFavorite"
       @openModal="openModal"
-      @updateCurrentPokemonIsFavorite="updateCurrentPokemonIsFavorite"
-      @updateEvolutionIsFavorite="updateEvolutionIsFavorite"
-      @updatePreviewPokemonIsFavorite="updatePreviewPokemonIsFavorite"
     />
     <span v-if="'maxCP' in pokemon && 'maxHP' in pokemon">
       <PokemonCardPowerbar
@@ -55,14 +50,6 @@ export default {
       type: Object,
       require: true
     },
-    isListLayout: {
-      type: Boolean,
-      default: false
-    },
-    isfilterFavorite: {
-      type: Boolean,
-      default: false
-    },
     showPreview: {
       type: Boolean,
       default: false
@@ -76,20 +63,8 @@ export default {
         router.push({ path: `/${this.pokemon.name}` });
       }
     },
-    updateListIsFavorite(id, bool) {
-      this.$emit("updateListIsFavorite", id, bool);
-    },
-    updateCurrentPokemonIsFavorite(bool) {
-      this.$emit("updateCurrentPokemonIsFavorite", bool);
-    },
-    updateEvolutionIsFavorite(id, bool) {
-      this.$emit("updateEvolutionIsFavorite", id, bool);
-    },
-    updatePreviewPokemonIsFavorite(bool) {
-      this.$emit("updatePreviewPokemonIsFavorite", bool);
-    },
-    getPokemons() {
-      this.$emit("getPokemons");
+    updateIsFavorite(id, bool) {
+      this.$emit("updateIsFavorite", id, bool);
     },
     openModal(name) {
       this.$emit("openModal", name);
@@ -98,31 +73,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "../styles/_variables.scss";
 
-.listLayout {
+.pokemon-card {
   display: flex;
-  .pokemon-image {
-    width: 8%;
-  }
-  .image-size {
-    width: 2.75rem;
-    height: 3.25rem;
-    margin: 0.25rem 0;
-  }
-  .pokemon-header {
-    width: 92%;
-  }
-}
-
-@media (max-width: 700px) {
-  .listLayout .pokemon-image {
-    width: 18%;
-  }
-}
-
-.pokedex-list-item {
+  flex-flow: column;
   border: 1px solid $grey;
   &:hover {
     box-shadow: 0 0 5px 1px $grey;

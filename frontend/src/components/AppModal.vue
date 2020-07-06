@@ -5,10 +5,7 @@
         <div class="modal-body" id="modalDescription">
           <PokemonCard
             :pokemon="pokemon"
-            :isfilterFavorite="isfilterFavorite"
-            @updatePreviewPokemonIsFavorite="updatePreviewPokemonIsFavorite"
-            @updateListIsFavorite="updateListIsFavorite"
-            @getPokemons="getPokemons"
+            @updateIsFavorite="updateIsFavorite"
           />
         </div>
         <button
@@ -36,24 +33,14 @@ export default {
     pokemon: {
       type: Object,
       require: true
-    },
-    isfilterFavorite: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {
+    updateIsFavorite(id, bool) {
+      this.$emit("updatePreviewIsFavorite", id, bool);
+    },
     close() {
       this.$emit("close");
-    },
-    updatePreviewPokemonIsFavorite(bool) {
-      this.$emit("updatePreviewPokemonIsFavorite", bool);
-    },
-    updateListIsFavorite(id, bool) {
-      this.$emit("updateListIsFavorite", id, bool);
-    },
-    getPokemons() {
-      this.$emit("getPokemons");
     }
   }
 };
@@ -81,10 +68,23 @@ export default {
   overflow-x: auto;
   display: flex;
   flex-direction: column;
-}
-
-.modal-body {
-  padding: 0.8rem 1rem;
+  .modal-body {
+    padding: 0.8rem 1rem;
+    /deep/ .pokemon-card {
+      flex-flow: column;
+      .pokemon-image {
+        width: 100%;
+      }
+      .image-size {
+        width: 7.5rem;
+        height: 8.75rem;
+        margin: 2rem 7rem;
+      }
+      .pokemon-header {
+        width: 97.1%;
+      }
+    }
+  }
 }
 
 .btn-green {
